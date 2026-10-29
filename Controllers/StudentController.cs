@@ -26,6 +26,9 @@ public class StudentController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<StudentDto> GetStudentById(int id)
     {
+        if (id <= 0)
+            return BadRequest(new { message = "Student ID must be greater than zero." });
+
         var student = _studentService.GetStudentById(id);
 
         if (student == null)
@@ -34,10 +37,19 @@ public class StudentController : ControllerBase
         return Ok(student);
     }
 
+
     // POST: api/students
     [HttpPost]
     public ActionResult<StudentDto> AddStudent(CreateStudentDto studentDto)
     {
+        if (_studentService.EmailExists(studentDto.Email))
+        {
+            return Conflict(new
+            {
+                message = "A student with this email already exists."
+            });
+        }
+
         var createdStudent = _studentService.AddStudent(studentDto);
 
         return CreatedAtAction(
@@ -48,22 +60,35 @@ public class StudentController : ControllerBase
 
     // PUT: api/students/1
     [HttpPut("{id}")]
-    public ActionResult<StudentDto> UpdateStudent(
-        int id,
-        UpdateStudentDto studentDto)
+    public ActionResult<StudentDto> UpdateStudent( int id, UpdateStudentDto studentDto)
     {
+        if (id <= 0)
+            return BadRequest(new { message = "Student ID must be greater than zero." });
+
+        if (_studentService.EmailExists(studentDto.Email, id))
+        {
+            return Conflict(new
+            {
+                message = "Another student with this email already exists."
+            });
+        }
+
+
         var updatedStudent = _studentService.UpdateStudent(id, studentDto);
 
         if (updatedStudent == null)
             return NotFound(new { message = "Student not found." });
 
+
         return Ok(updatedStudent);
     }
 
-    // DELETE: api/students/1
     [HttpDelete("{id}")]
     public IActionResult DeleteStudent(int id)
     {
+        if (id <= 0)
+            return BadRequest(new { message = "Student ID must be greater than zero." });
+
         var deleted = _studentService.DeleteStudent(id);
 
         if (!deleted)
@@ -71,4 +96,8 @@ public class StudentController : ControllerBase
 
         return NoContent();
     }
+
+
 }
+
+

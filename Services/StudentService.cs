@@ -62,6 +62,8 @@ public class StudentService : IStudentService
             Age = studentDto.Age
         };
 
+
+
         _students.Add(student);
 
         return new StudentDto
@@ -104,4 +106,13 @@ public class StudentService : IStudentService
 
         return true;
     }
+
+    public bool EmailExists(string email, int? excludeStudentId = null)
+    {
+        return _students.Any(s =>
+            s.Email.Equals(email, StringComparison.OrdinalIgnoreCase)
+            && s.Id != excludeStudentId);
+    }
+
+
 }
