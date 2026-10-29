@@ -1,16 +1,17 @@
-﻿using WebApiPractice.Models;
+﻿using WebApiPractice.DTOs;
+using WebApiPractice.Models;
 
 namespace WebApiPractice.Services;
 
 public interface IStudentService
 {
-    List<Student> GetAllStudents();
+    List<StudentDto> GetAllStudents();
 
-    Student? GetStudentById(int id);
+    StudentDto? GetStudentById(int id);
 
-    Student AddStudent(Student student);
+    StudentDto AddStudent(CreateStudentDto studentDto);
 
-    Student? UpdateStudent(int id, Student updatedStudent);
+    StudentDto? UpdateStudent(int id, UpdateStudentDto studentDto);
 
     bool DeleteStudent(int id);
 }
