@@ -15,14 +15,19 @@ public class StudentRepository : IStudentRepository
 
     public async Task<List<Student>> GetAllAsync()
     {
-        return await _context.Students.ToListAsync();
+        return await _context.Students
+            .Include(s => s.Department)
+            .ToListAsync();
     }
 
     public async Task<Student?> GetByIdAsync(int id)
     {
         return await _context.Students
+            .Include(s => s.Department)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
+
+
 
     public async Task<bool> EmailExistsAsync(
         string email,
